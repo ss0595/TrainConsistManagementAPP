@@ -19,28 +19,27 @@ class PassengerBogie {
     }
 }
 
-// Train class with HashSet for unique IDs
+// Train class using TreeSet (SortedSet)
 class Train {
     String trainName;
     ArrayList<PassengerBogie> bogies;
-    HashSet<String> bogieIds; // ensures uniqueness
+    TreeSet<String> sortedIds; // maintains sorted unique IDs
 
     Train(String trainName) {
         this.trainName = trainName;
         bogies = new ArrayList<>();
-        bogieIds = new HashSet<>();
+        sortedIds = new TreeSet<>();
     }
 
-    // Add bogie with uniqueness check
+    // Add bogie
     void addBogie(PassengerBogie b) {
-        if (bogieIds.contains(b.id)) {
-            System.out.println("❌ Duplicate Bogie ID! Cannot add.");
+        if (!sortedIds.add(b.id)) {
+            System.out.println("❌ Duplicate ID! Not allowed.");
             return;
         }
 
         bogies.add(b);
-        bogieIds.add(b.id);
-        System.out.println("✅ Bogie added successfully!");
+        System.out.println("✅ Bogie added!");
     }
 
     // Remove bogie
@@ -52,7 +51,7 @@ class Train {
             PassengerBogie b = it.next();
             if (b.id.equals(id)) {
                 it.remove();
-                bogieIds.remove(id); // remove from set also
+                sortedIds.remove(id);
                 found = true;
                 System.out.println("✅ Bogie removed!");
                 break;
@@ -64,12 +63,20 @@ class Train {
         }
     }
 
-    // Display
+    // Display sorted IDs
+    void displaySortedIds() {
+        System.out.println("\nSorted Bogie IDs:");
+        for (String id : sortedIds) {
+            System.out.println(id);
+        }
+    }
+
+    // Display full details
     void displayAll() {
         System.out.println("\nTrain: " + trainName);
 
         if (bogies.isEmpty()) {
-            System.out.println("No bogies available.");
+            System.out.println("No bogies.");
             return;
         }
 
@@ -91,8 +98,9 @@ public class TrainConsistApp {
             System.out.println("\n--- Menu ---");
             System.out.println("1. Add Bogie");
             System.out.println("2. Remove Bogie");
-            System.out.println("3. Display Bogies");
-            System.out.println("4. Exit");
+            System.out.println("3. Display All");
+            System.out.println("4. Display Sorted IDs");
+            System.out.println("5. Exit");
             System.out.print("Enter choice: ");
             choice = sc.nextInt();
 
@@ -120,6 +128,10 @@ public class TrainConsistApp {
                     break;
 
                 case 4:
+                    train.displaySortedIds();
+                    break;
+
+                case 5:
                     System.out.println("Exiting...");
                     break;
 
@@ -127,7 +139,7 @@ public class TrainConsistApp {
                     System.out.println("Invalid choice!");
             }
 
-        } while (choice != 4);
+        } while (choice != 5);
 
         sc.close();
     }
