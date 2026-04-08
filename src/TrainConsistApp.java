@@ -345,3 +345,89 @@ public class Main {
         manager.validateCapacityLimit(200);
     }
 }
+import java.util.*;
+
+// Bogie class
+class Bogie {
+    private String id;
+    private String type;
+
+    public Bogie(String id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return id + " (" + type + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bogie)) return false;
+        Bogie bogie = (Bogie) o;
+        return id.equals(bogie.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+}
+
+// Manager class
+class TrainConsistManager {
+
+    private HashMap<Bogie, Integer> capacityMap = new HashMap<>();
+
+    public void addBogie(Bogie bogie, int capacity) {
+        capacityMap.put(bogie, capacity);
+    }
+
+    // Sort bogies by capacity (ascending or descending)
+    public void sortBogiesByCapacity(boolean descending) {
+
+        List<Map.Entry<Bogie, Integer>> list =
+                new ArrayList<>(capacityMap.entrySet());
+
+        // Custom Comparator
+        list.sort((e1, e2) -> {
+            if (descending) {
+                return e2.getValue() - e1.getValue(); // high → low
+            } else {
+                return e1.getValue() - e2.getValue(); // low → high
+            }
+        });
+
+        System.out.println("\nBogies sorted by capacity (" +
+                (descending ? "High to Low" : "Low to High") + "):");
+
+        for (Map.Entry<Bogie, Integer> entry : list) {
+            System.out.println(entry.getKey() +
+                    " -> Capacity: " + entry.getValue());
+        }
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+
+        TrainConsistManager manager = new TrainConsistManager();
+
+        Bogie b1 = new Bogie("B1", "Sleeper");
+        Bogie b2 = new Bogie("B2", "AC Chair");
+        Bogie b3 = new Bogie("B3", "Goods");
+
+        manager.addBogie(b1, 72);
+        manager.addBogie(b2, 56);
+        manager.addBogie(b3, 100);
+
+        // Sort descending (most useful in real-world)
+        manager.sortBogiesByCapacity(true);
+
+        // Sort ascending
+        manager.sortBogiesByCapacity(false);
+    }
+}
