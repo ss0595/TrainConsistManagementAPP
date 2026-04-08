@@ -132,3 +132,100 @@ public class TrainConsistApp {
         sc.close();
     }
 }
+import java.util.*;
+
+class Bogie {
+    private String id;
+    private String type;
+
+    public Bogie(String id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String toString() {
+        return id + " (" + type + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bogie)) return false;
+        Bogie bogie = (Bogie) o;
+        return id.equals(bogie.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+}
+
+class TrainConsistManagementApp {
+
+    // Maintains insertion order + uniqueness
+    private LinkedHashSet<Bogie> bogieSet = new LinkedHashSet<>();
+
+    // Stack to enforce LIFO removal
+    private Deque<Bogie> stack = new ArrayDeque<>();
+
+    // Attach bogie
+    public void attachBogie(Bogie bogie) {
+        if (bogieSet.contains(bogie)) {
+            System.out.println("Bogie already exists: " + bogie);
+            return;
+        }
+
+        bogieSet.add(bogie);
+        stack.push(bogie); // LIFO tracking
+
+        System.out.println("Attached: " + bogie);
+    }
+
+    // Remove last attached bogie (LIFO)
+    public void detachLastBogie() {
+        if (stack.isEmpty()) {
+            System.out.println("No bogies to remove.");
+            return;
+        }
+
+        Bogie last = stack.pop();
+        bogieSet.remove(last);
+
+        System.out.println("Detached (LIFO): " + last);
+    }
+
+    // Display train composition
+    public void displayConsist() {
+        System.out.println("\nCurrent Train Consist (Insertion Order):");
+        for (Bogie b : bogieSet) {
+            System.out.println(b);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        TrainConsistManagementApp manager = new TrainConsistManagementApp();
+
+        Bogie b1 = new Bogie("B1", "Sleeper");
+        Bogie b2 = new Bogie("B2", "AC Chair");
+        Bogie b3 = new Bogie("B3", "Goods");
+
+        manager.attachBogie(b1);
+        manager.attachBogie(b2);
+        manager.attachBogie(b3);
+
+        manager.displayConsist();
+
+        // LIFO removal
+        manager.detachLastBogie();
+
+        manager.displayConsist();
+    }
+}
