@@ -229,3 +229,119 @@ public class Main {
         manager.displayConsist();
     }
 }
+import java.util.*;
+
+// Bogie class
+class Bogie {
+    private String id;
+    private String type;
+
+    public Bogie(String id, String type) {
+        this.id = id;
+        this.type = type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return id + " (" + type + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Bogie)) return false;
+        Bogie bogie = (Bogie) o;
+        return id.equals(bogie.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+}
+
+// Manager class
+class TrainConsistManager {
+
+    // Map Bogie -> Capacity
+    private HashMap<Bogie, Integer> capacityMap = new HashMap<>();
+
+    // Add bogie with capacity
+    public void addBogie(Bogie bogie, int capacity) {
+        if (capacityMap.containsKey(bogie)) {
+            System.out.println("Bogie already exists: " + bogie);
+            return;
+        }
+
+        capacityMap.put(bogie, capacity);
+        System.out.println("Added: " + bogie + " | Capacity: " + capacity);
+    }
+
+    // Remove bogie
+    public void removeBogie(Bogie bogie) {
+        if (!capacityMap.containsKey(bogie)) {
+            System.out.println("Bogie not found: " + bogie);
+            return;
+        }
+
+        capacityMap.remove(bogie);
+        System.out.println("Removed: " + bogie);
+    }
+
+    // Display all bogies with capacity
+    public void displayAll() {
+        System.out.println("\nTrain Bogie Capacity Details:");
+        for (Map.Entry<Bogie, Integer> entry : capacityMap.entrySet()) {
+            System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
+        }
+    }
+
+    // Get total capacity
+    public int getTotalCapacity() {
+        int total = 0;
+        for (int cap : capacityMap.values()) {
+            total += cap;
+        }
+        return total;
+    }
+
+    // Validate capacity (example rule)
+    public void validateCapacityLimit(int maxLimit) {
+        int total = getTotalCapacity();
+        if (total > maxLimit) {
+            System.out.println("⚠ Capacity exceeded! Total: " + total);
+        } else {
+            System.out.println("✅ Capacity within limit. Total: " + total);
+        }
+    }
+}
+
+// Main class
+public class Main {
+    public static void main(String[] args) {
+
+        TrainConsistManager manager = new TrainConsistManager();
+
+        Bogie b1 = new Bogie("B1", "Sleeper");
+        Bogie b2 = new Bogie("B2", "AC Chair");
+        Bogie b3 = new Bogie("B3", "Goods");
+
+        manager.addBogie(b1, 72);   // seats
+        manager.addBogie(b2, 60);   // seats
+        manager.addBogie(b3, 100);  // load capacity
+
+        manager.displayAll();
+
+        System.out.println("\nTotal Capacity: " + manager.getTotalCapacity());
+
+        manager.validateCapacityLimit(200);
+    }
+}
